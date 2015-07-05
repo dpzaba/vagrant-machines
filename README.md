@@ -1,2 +1,2 @@
 # vms
-Vagrant machines for development
+Vagrant machines provisioned with ansible for development
