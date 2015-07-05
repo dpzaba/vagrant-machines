@@ -1,0 +1,12 @@
+- name: Installing common packages
+  sudo: yes
+  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time=6000
+  with_items:
+    - htop
+    - git-core
+    - tree
+    - curl
+    - iotop
+    - nethogs
+    - emacs
+    - tmux

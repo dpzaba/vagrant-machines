@@ -1,0 +1,25 @@
+- hosts: all
+  vars:
+    local_home: "{{ ansible_env.HOME }}"
+    rust_script_path: "{{ local_home }}/rustup.sh"
+  roles:
+    - { role: common_packages,  tags: [ 'common_packages' ] }
+  tasks:
+    # Installing Rust by default (last version in /usr/local)
+
+    - name: Check if Rust is already installed
+      command: rustc --version
+      ignore_errors: yes
+      register: rust_check
+
+    - name: Download installation script
+      get_url: url=http://static.rust-lang.org/rustup.sh dest={{ rust_script_path }}
+      when: rust_check.rc != 0
+
+    - name: Execution permission to script
+      command: chmod +x {{ rust_script_path }}
+      when: rust_check.rc != 0
+
+    - name: Run installation script
+      command: "{{ rust_script_path }} -y"
+      when: rust_check.rc != 0
