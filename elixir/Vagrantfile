@@ -4,7 +4,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   # local ip of server
-  config.vm.network :private_network, ip: "33.33.33.02"
+  config.vm.network :private_network, ip: "33.33.33.03"
   # share ../ directory
   config.vm.synced_folder "../../..", "/home/vagrant/Projects"
 
