@@ -1,0 +1,34 @@
+- hosts: all
+  vars:
+    local_home: "{{ ansible_env.HOME }}"
+    erlang_solutions_package: "{{ local_home }}/erlang-solutions_1.0_all.deb"
+
+  roles:
+    - { role: common_packages,  tags: [ 'common_packages' ] }
+
+  tasks:
+    # Installing Elixir & Erlang
+    # http://elixir-lang.org/install.html
+    # https://packages.erlang-solutions.com/erlang/
+
+    - name: Check if Elixir is already installed
+      command: elixir -v
+      ignore_errors: yes
+      register: elixir_check
+
+    - name: Download erlang repository installation package
+      get_url: url="http://packages.erlang-solutions.com/{{ erlang_solutions_package }}" dest={{ erlang_solutions_package }}
+      when: elixir_check.rc != 0
+
+    - name: Install repository package
+      sudo: yes
+      apt: deb={{ erlang_solutions_package }}
+      when: elixir_check.rc != 0
+
+    - name: Install elixir and erlang packages
+      sudo: yes
+      apt: name={{ item  }} state=present update_cache=yes
+      with_items:
+        - elixir
+        - erlang
+      when: elixir_check.rc != 0
